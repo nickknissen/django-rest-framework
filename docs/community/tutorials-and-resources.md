@@ -4,20 +4,10 @@ There are a wide range of resources available for learning and using Django REST
 
 ## Books
 
-<div class="book-covers">
-  <a class="book-cover" href="https://hellowebapp.com/order/">
-    <img src="../../img/books/hwa-cover.png"/>
-  </a>
-  <a class="book-cover" href="https://www.twoscoopspress.com/products/two-scoops-of-django-1-11">
-    <img src="../../img/books/tsd-cover.png"/>
-  </a>
-  <a class="book-cover" href="https://wsvincent.com/books/">
-    <img src="../../img/books/rad-cover.png"/>
-  </a>
-  <a class="book-cover" href="https://books.agiliq.com/projects/django-api-polls-tutorial/en/latest/">
-    <img src="../../img/books/bda-cover.png"/>
-  </a>
-</div>
+[![Hello webapp](../img/books/hwa-cover.png)](https://hellowebapp.com/order/)
+[![Two Scoops of Django](../img/books/tsd-cover.png)](https://www.twoscoopspress.com/products/two-scoops-of-django-1-11)
+[![REST APIs with Django](../img/books/rad-cover.png)](https://wsvincent.com/books/)
+[![Building APIs with Django and Django Rest Framework](../img/books/bda-cover.png)](https://books.agiliq.com/projects/django-api-polls-tutorial/en/latest/)
 
 ## Tutorials
 
