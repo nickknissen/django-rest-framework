@@ -55,18 +55,19 @@ representation become available as an option.
 
 We can also request the schema from the command line, by specifying the desired
 content type in the `Accept` header.
+```bash
+$ http http://127.0.0.1:8000/schema/ Accept:application/coreapi+json
+HTTP/1.0 200 OK
+Allow: GET, HEAD, OPTIONS
+Content-Type: application/coreapi+json
 
-    $ http http://127.0.0.1:8000/schema/ Accept:application/coreapi+json
-    HTTP/1.0 200 OK
-    Allow: GET, HEAD, OPTIONS
-    Content-Type: application/coreapi+json
-
-    {
-        "_meta": {
-            "title": "Pastebin API"
-        },
-        "_type": "document",
-        ...
+{
+    "_meta": {
+        "title": "Pastebin API"
+    },
+    "_type": "document",
+    ...
+```
 
 The default output style is to use the [Core JSON][corejson] encoding.
 
@@ -81,68 +82,76 @@ Core API command line client.
 
 The command line client is available as the `coreapi-cli` package:
 
-    $ pip install coreapi-cli
+```bash
+$ pip install coreapi-cli
+```
 
 Now check that it is available on the command line...
 
-    $ coreapi
-    Usage: coreapi [OPTIONS] COMMAND [ARGS]...
+```bash
+$ coreapi
+Usage: coreapi [OPTIONS] COMMAND [ARGS]...
 
-      Command line client for interacting with CoreAPI services.
+    Command line client for interacting with CoreAPI services.
 
-      Visit https://www.coreapi.org/ for more information.
+    Visit https://www.coreapi.org/ for more information.
 
-    Options:
-      --version  Display the package version number.
-      --help     Show this message and exit.
+Options:
+    --version  Display the package version number.
+    --help     Show this message and exit.
 
-    Commands:
-    ...
+Commands:
+...
+```
 
 First we'll load the API schema using the command line client.
 
-    $ coreapi get http://127.0.0.1:8000/schema/
-    <Pastebin API "http://127.0.0.1:8000/schema/">
-        snippets: {
-            highlight(id)
-            list()
-            read(id)
-        }
-        users: {
-            list()
-            read(id)
-        }
+```bash
+$ coreapi get http://127.0.0.1:8000/schema/
+<Pastebin API "http://127.0.0.1:8000/schema/">
+    snippets: {
+        highlight(id)
+        list()
+        read(id)
+    }
+    users: {
+        list()
+        read(id)
+    }
+```
 
 We haven't authenticated yet, so right now we're only able to see the read only
 endpoints, in line with how we've set up the permissions on the API.
 
 Let's try listing the existing snippets, using the command line client:
-
-    $ coreapi action snippets list
-    [
-        {
-            "url": "http://127.0.0.1:8000/snippets/1/",
-            "id": 1,
-            "highlight": "http://127.0.0.1:8000/snippets/1/highlight/",
-            "owner": "lucy",
-            "title": "Example",
-            "code": "print('hello, world!')",
-            "linenos": true,
-            "language": "python",
-            "style": "friendly"
-        },
-        ...
+```bash
+$ coreapi action snippets list
+[
+    {
+        "url": "http://127.0.0.1:8000/snippets/1/",
+        "id": 1,
+        "highlight": "http://127.0.0.1:8000/snippets/1/highlight/",
+        "owner": "lucy",
+        "title": "Example",
+        "code": "print('hello, world!')",
+        "linenos": true,
+        "language": "python",
+        "style": "friendly"
+    },
+    ...
+```
 
 Some of the API endpoints require named parameters. For example, to get back
 the highlight HTML for a particular snippet we need to provide an id.
+```basj
+$ coreapi action snippets highlight --param id=1
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
-    $ coreapi action snippets highlight --param id=1
-    <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-
-    <html>
-    <head>
-      <title>Example</title>
-      ...
+<html>
+<head>
+    <title>Example</title>
+    ...
+```
 
 ## Authenticating our client
 
@@ -152,49 +161,55 @@ authenticate as a valid user. In this case we'll just use basic auth.
 Make sure to replace the `<username>` and `<password>` below with your
 actual username and password.
 
-    $ coreapi credentials add 127.0.0.1 <username>:<password> --auth basic
-    Added credentials
-    127.0.0.1 "Basic <...>"
+```bash
+$ coreapi credentials add 127.0.0.1 <username>:<password> --auth basic
+Added credentials
+127.0.0.1 "Basic <...>"
+```
 
 Now if we fetch the schema again, we should be able to see the full
 set of available interactions.
 
-    $ coreapi reload
-    Pastebin API "http://127.0.0.1:8000/schema/">
-        snippets: {
-            create(code, [title], [linenos], [language], [style])
-            delete(id)
-            highlight(id)
-            list()
-            partial_update(id, [title], [code], [linenos], [language], [style])
-            read(id)
-            update(id, code, [title], [linenos], [language], [style])
-        }
-        users: {
-            list()
-            read(id)
-        }
+```bash
+$ coreapi reload
+Pastebin API "http://127.0.0.1:8000/schema/">
+    snippets: {
+        create(code, [title], [linenos], [language], [style])
+        delete(id)
+        highlight(id)
+        list()
+        partial_update(id, [title], [code], [linenos], [language], [style])
+        read(id)
+        update(id, code, [title], [linenos], [language], [style])
+    }
+    users: {
+        list()
+        read(id)
+    }
+```
 
 We're now able to interact with these endpoints. For example, to create a new
 snippet:
-
-    $ coreapi action snippets create --param title="Example" --param code="print('hello, world')"
-    {
-        "url": "http://127.0.0.1:8000/snippets/7/",
-        "id": 7,
-        "highlight": "http://127.0.0.1:8000/snippets/7/highlight/",
-        "owner": "lucy",
-        "title": "Example",
-        "code": "print('hello, world')",
-        "linenos": false,
-        "language": "python",
-        "style": "friendly"
-    }
+```bash
+$ coreapi action snippets create --param title="Example" --param code="print('hello, world')"
+{
+    "url": "http://127.0.0.1:8000/snippets/7/",
+    "id": 7,
+    "highlight": "http://127.0.0.1:8000/snippets/7/highlight/",
+    "owner": "lucy",
+    "title": "Example",
+    "code": "print('hello, world')",
+    "linenos": false,
+    "language": "python",
+    "style": "friendly"
+}
+```
 
 And to delete a snippet:
 
-    $ coreapi action snippets delete --param id=7
-
+```bash
+$ coreapi action snippets delete --param id=7
+```
 As well as the command line client, developers can also interact with your
 API using client libraries. The Python client library is the first of these
 to be available, and a Javascript client library is planned to be released
